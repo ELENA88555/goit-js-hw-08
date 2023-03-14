@@ -4,14 +4,26 @@ import throttle from 'lodash.throttle';
 const iframe = document.querySelector('iframe');
 const player = new Player(iframe);
 
+
+const LOCAL_STORAGE_KEY = "videoplayer-current-time"
+
 const onPlay = function(data) {
-  localStorage.setItem("videoplayer-current-time", JSON.stringify(data.seconds));
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data.seconds));
 };
 
 
 
 player.on('timeupdate', throttle(onPlay, 1000));
-const currentTime = JSON.parse(localStorage.getItem("videoplayer-current-time"))
+
+let currentTime = null
+
+try {
+  currentTime = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
+} catch (error) {
+  console.log(error.name); // "SyntaxError"
+  console.log(error.message); // Unexpected token W in JSON at position 0
+};
+
 
 
 player
